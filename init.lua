@@ -1,5 +1,5 @@
 require 'window'
-require 'string'
+require 'mystring'
 require 'scratch'
 
 --Reload
