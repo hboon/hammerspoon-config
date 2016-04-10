@@ -22,3 +22,11 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "W", function()
 	--frame.h = screenFrame.h
 	--win:setFrame(frame)
 end)
+
+function listTabToStr(list)
+	result = ""
+	for i=1, #list do
+		result = result .. ", " .. list[i]
+	end
+	return result
+end
