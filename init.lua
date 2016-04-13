@@ -16,6 +16,7 @@ downloadsWatcher = hs.pathwatcher.new(downloadsDir, function(changed)
 	for _,file in pairs(changed) do
 		moveProvisioningProfiles(file)
 		moveAirDroppedImages(file)
+		moveAirDroppedVideos(file)
 	end
 end)
 downloadsWatcher:start()
@@ -38,9 +39,16 @@ function moveProvisioningProfiles(filename)
 end
 
 function moveAirDroppedImages(filename)
+	return moveAirDroppedImageAndVideos(filename, ".png", "image")
+end
+
+function moveAirDroppedVideos(filename)
+	return moveAirDroppedImageAndVideos(filename, ".mov", "video")
+end
+
+function moveAirDroppedImageAndVideos(filename, ext, fileType)
 	local destDir = os.getenv("HOME") .. "/Desktop/"
 	destDir = myfile:escapeFileName(destDir)
-	local ext = ".png"
 	local prefix = "img_"
 	local name = filename:match( "([^/]+)$" )
 	--Must check against filename (with space verbatim), and not against escapedSrc (with \\space)
@@ -48,7 +56,7 @@ function moveAirDroppedImages(filename)
 		--TODO if file already exists, append "-1" to filename
 		local escapedSrc = myfile:escapeFileName(filename)
 		os.execute("mv ${escapedSrc} ${destDir}" % {escapedSrc=escapedSrc, destDir=destDir})
-		local msg = "Moved file ${name} from ${from} to ${to}" % {name=name, from="Downloads/", to="Desktop/"}
+		local msg = "Moved ${fileType} ${name} from ${from} to ${to}" % {fileType=fileType, name=name, from="Downloads/", to="Desktop/"}
 		hs.notify.new({title="Hammerspoon", informativeText=msg}):send()
 		return true
 	end
