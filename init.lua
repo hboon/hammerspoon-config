@@ -17,6 +17,7 @@ downloadsWatcher = hs.pathwatcher.new(downloadsDir, function(changed)
 		moveProvisioningProfiles(file)
 		moveAirDroppedImages(file)
 		moveAirDroppedVideos(file)
+		moveCerts(file)
 	end
 end)
 downloadsWatcher:start()
@@ -47,9 +48,16 @@ function moveAirDroppedVideos(filename)
 end
 
 function moveAirDroppedImageAndVideos(filename, ext, fileType)
+	return moveDownloadedFilesToDesktop(filename, "img_", ext, fileType)
+end
+
+function moveCerts(filename)
+	return moveDownloadedFilesToDesktop(filename, "", "cer", "Cert")
+end
+
+function moveDownloadedFilesToDesktop(filename, prefix, ext, fileType)
 	local destDir = os.getenv("HOME") .. "/Desktop/"
 	destDir = myfile:escapeFileName(destDir)
-	local prefix = "img_"
 	local name = filename:match( "([^/]+)$" )
 	--Must check against filename (with space verbatim), and not against escapedSrc (with \\space)
 	if string.lower(filename:sub(-string.len(ext))) == ext and string.lower(name:sub(1, string.len(prefix))) == prefix and myfile:exists(filename) then
