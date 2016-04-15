@@ -61,12 +61,43 @@ function moveDownloadedFilesToDesktop(filename, prefix, ext, fileType)
 	local name = filename:match( "([^/]+)$" )
 	--Must check against filename (with space verbatim), and not against escapedSrc (with \\space)
 	if string.lower(filename:sub(-string.len(ext))) == ext and string.lower(name:sub(1, string.len(prefix))) == prefix and myfile:exists(filename) then
-		--TODO if file already exists, append "-1" to filename
+		name = generateUniqueDestinationFilename(name, destDir)
+		--TODO need to escape the destination filename too
 		local escapedSrc = myfile:escapeFileName(filename)
-		os.execute("mv ${escapedSrc} ${destDir}" % {escapedSrc=escapedSrc, destDir=destDir})
+		os.execute("mv ${escapedSrc} ${destDir}${name}" % {escapedSrc=escapedSrc, destDir=destDir, name=name})
 		local msg = "Moved ${fileType} ${name} from ${from} to ${to}" % {fileType=fileType, name=name, from="Downloads/", to="Desktop/"}
 		hs.notify.new({title="Hammerspoon", informativeText=msg}):send()
 		return true
 	end
 	return false
+end
+
+-- Appends a -1 or -2, etc if file already exists. e.g. "abc.ext" -> "abc-1.ext"
+function generateUniqueDestinationFilename(name, destDir)
+	local destFilename = destDir .. name
+	while myfile:exists(destFilename) do
+		--TODO need to escape the destination filename too
+		local nameWithoutExt, _, extWithDot = myfile:breakFilename(name)
+		local nameWithoutNum, num = breakTrailingNumeric(nameWithoutExt)
+		if num then
+			num = num+1
+		else
+			num = 1
+		end
+		name = nameWithoutNum .. "-" .. num .. extWithDot
+		destFilename = destDir .. name
+	end
+	return name
+end
+
+-- "abc-1" -> "abc", 1
+-- "abc" -> "abc", nil
+function breakTrailingNumeric(name)
+	if string.find(name, "-") then
+		local _, _, num = string.find(name, "([^-]*)$")
+		-- TODO check if end with "-XXX" a number
+		return name:sub(1, string.len(name)-string.len(num)-1), math.ceil(num+0)
+	else
+		return name, nil
+	end
 end

@@ -26,4 +26,15 @@ function myfile:isDir(name)
     return (exists(name) and not isFile(name))
 end
 
+-- "abc.ext" -> "abc", "ext", ".ext"
+-- "abc" -> "abc", "", ""
+function myfile:breakFilename(name)
+	if string.find(name, "%.") then
+		local _, _, ext = string.find(name, "([^.]*)$")
+		return name:sub(1, string.len(name)-string.len(ext)-1), ext, "." .. ext
+	else
+		return name, "", ""
+	end
+end
+
 return myfile
