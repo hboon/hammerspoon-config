@@ -12,18 +12,18 @@ function myfile:exists(name)
 end
 
 function myfile:isFile(name)
-    if type(name)~="string" then return false end
-    if not exists(name) then return false end
-    local f = io.open(name)
-    if f then
-        f:close()
-        return true
-    end
-    return false
+	if type(name)~="string" then return false end
+	if not exists(name) then return false end
+	local f = io.open(name)
+	if f then
+		f:close()
+		return true
+	end
+	return false
 end
 
 function myfile:isDir(name)
-    return (exists(name) and not isFile(name))
+	return (exists(name) and not isFile(name))
 end
 
 -- "abc.ext" -> "abc", "ext", ".ext"
