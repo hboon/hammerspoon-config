@@ -26,17 +26,9 @@ hs.shutdownCallback = function()
 	downloadsWatcher:stop()
 end
 
+--Strangely, this doesn't append a -1, -2 for duplicate filenames with generateUniqueDestinationFilename(). Maybe due to a space in the path? But good in this case, because I want to replace provisioning profiles with the same name if it exists
 function moveProvisioningProfiles(filename)
-	local destDir = "~/Dropbox/hb-and-ml-common/Provisioning Profiles/"
-	destDir = myfile:escapeFileName(destDir)
-	local ext = ".mobileprovision"
-	--Must check against filename (with space verbatim), and not against escapedSrc (with \\space)
-	if filename:sub(-string.len(ext)) == ext and myfile:exists(filename) then
-		local escapedSrc = myfile:escapeFileName(filename)
-		os.execute("mv ${escapedSrc} ${destDir}" % {escapedSrc=escapedSrc, destDir=destDir})
-		return true
-	end
-	return false
+	return moveDownloadedFilesToDirectory(filename, "", "mobileprovision", "Provisioning Profile", "/Users/hboon/Dropbox/hb-and-ml-common/Provisioning Profiles/")
 end
 
 function moveAirDroppedImages(filename)
@@ -57,6 +49,23 @@ end
 
 function moveDownloadedFilesToDesktop(filename, prefix, ext, fileType)
 	local destDir = os.getenv("HOME") .. "/Desktop/"
+	destDir = myfile:escapeFileName(destDir)
+	local name = filename:match( "([^/]+)$" )
+	--Must check against filename (with space verbatim), and not against escapedSrc (with \\space)
+	if string.lower(filename:sub(-string.len(ext))) == ext and string.lower(name:sub(1, string.len(prefix))) == prefix and myfile:exists(filename) then
+		name = generateUniqueDestinationFilename(name, destDir)
+		--TODO need to escape the destination filename too
+		local escapedSrc = myfile:escapeFileName(filename)
+		os.execute("mv ${escapedSrc} ${destDir}${name}" % {escapedSrc=escapedSrc, destDir=destDir, name=name})
+		local msg = "Moved ${fileType} ${name} from ${from} to ${to}" % {fileType=fileType, name=name, from="Downloads/", to="Desktop/"}
+		hs.notify.new({title="Hammerspoon", informativeText=msg}):send()
+		return true
+	end
+	return false
+end
+
+--Change moveDownloadedFilesToDesktop() to call this, passing in destDir
+function moveDownloadedFilesToDirectory(filename, prefix, ext, fileType, destDir)
 	destDir = myfile:escapeFileName(destDir)
 	local name = filename:match( "([^/]+)$" )
 	--Must check against filename (with space verbatim), and not against escapedSrc (with \\space)
