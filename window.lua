@@ -116,32 +116,90 @@ function topTwoThirdFrame()
 end
 
 hs.hotkey.bind({"cmd", "alt"}, "Left", function()
-	local win = hs.window.focusedWindow()
-	local frame = win:frame()
-
-	if frame.x == leftHalfFrame().x and frame.y == leftHalfFrame().y and frame.w == leftHalfFrame().w then
-		win:setFrame(leftOneThirdFrame())
-	elseif frame.x == leftOneThirdFrame().x and frame.y == leftOneThirdFrame().y and frame.w < leftHalfFrame().w then
-		win:setFrame(leftTwoThirdFrame())
-	else
-		win:setFrame(leftHalfFrame())
-	end
+	sizeLeft()
 end)
 
 hs.hotkey.bind({"cmd", "alt"}, "Right", function()
-	local win = hs.window.focusedWindow()
-	local frame = win:frame()
-
-	if frame.x == rightHalfFrame().x and frame.y == rightHalfFrame().y and frame.w == rightHalfFrame().w then
-		win:setFrame(rightOneThirdFrame())
-	elseif frame.x == rightOneThirdFrame().x and frame.y == rightOneThirdFrame().y and frame.w < rightHalfFrame().w then
-		win:setFrame(rightTwoThirdFrame())
-	else
-		win:setFrame(rightHalfFrame())
-	end
+	sizeRight()
 end)
 
 hs.hotkey.bind({"cmd", "alt"}, "Up", function()
+	sizeTop()
+end)
+
+hs.hotkey.bind({"cmd", "alt"}, "Down", function()
+	sizeBottom()
+end)
+
+-- Full screen
+hs.hotkey.bind({"cmd", "alt"}, "f", function()
+	sizeFullScreen()
+end)
+
+-- Top left
+hs.hotkey.bind({"cmd", "alt", "shift"}, "Left", function()
+	sizeTopLeft()
+end)
+
+-- Top right
+hs.hotkey.bind({"cmd", "alt", "shift"}, "Right", function()
+	sizeTopRight()
+end)
+
+-- Bottom left
+hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left", function()
+	sizeBottomLeft()
+end)
+
+-- Bottom right
+hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Right", function()
+	sizeBottomRight()
+end)
+
+function fillLeftHalf()
+	hs.window.animationDuration = 0
+	local win = hs.window.focusedWindow()
+	win:setFrame(leftHalfFrame())
+	hs.window.animationDuration = 0.2
+end
+
+function fillLeftOneThird()
+	hs.window.animationDuration = 0
+	local win = hs.window.focusedWindow()
+	win:setFrame(leftOneThirdFrame())
+	hs.window.animationDuration = 0.2
+end
+
+function fillLeftTwoThird()
+	hs.window.animationDuration = 0
+	local win = hs.window.focusedWindow()
+	win:setFrame(leftTwoThirdFrame())
+	hs.window.animationDuration = 0.2
+end
+
+function fillRightHalf()
+	hs.window.animationDuration = 0
+	local win = hs.window.focusedWindow()
+	win:setFrame(rightHalfFrame())
+	hs.window.animationDuration = 0.2
+end
+
+function fillRightOneThird()
+	hs.window.animationDuration = 0
+	local win = hs.window.focusedWindow()
+	win:setFrame(rightOneThirdFrame())
+	hs.window.animationDuration = 0.2
+end
+
+function fillRightTwoThird()
+	hs.window.animationDuration = 0
+	local win = hs.window.focusedWindow()
+	win:setFrame(rightTwoThirdFrame())
+	hs.window.animationDuration = 0.2
+end
+
+function fillTopHalf()
+	hs.window.animationDuration = 0
 	local win = hs.window.focusedWindow()
 	local frame = win:frame()
 	local screen = win:screen()
@@ -152,9 +210,11 @@ hs.hotkey.bind({"cmd", "alt"}, "Up", function()
 	frame.w = screenFrame.w
 	frame.h = screenFrame.h/2
 	win:setFrame(frame)
-end)
+	hs.window.animationDuration = 0.2
+end
 
-hs.hotkey.bind({"cmd", "alt"}, "Down", function()
+function fillBottomHalf()
+	hs.window.animationDuration = 0
 	local win = hs.window.focusedWindow()
 	local frame = win:frame()
 	local screen = win:screen()
@@ -165,10 +225,44 @@ hs.hotkey.bind({"cmd", "alt"}, "Down", function()
 	frame.w = screenFrame.w
 	frame.h = screenFrame.h/2
 	win:setFrame(frame)
-end)
+	hs.window.animationDuration = 0.2
+end
 
--- Full screen
-hs.hotkey.bind({"cmd", "alt"}, "f", function()
+function sizeLeft()
+	local win = hs.window.focusedWindow()
+	local frame = win:frame()
+
+	if frame.x == leftHalfFrame().x and frame.y == leftHalfFrame().y and frame.w == leftHalfFrame().w then
+		fillLeftOneThird()
+	elseif frame.x == leftOneThirdFrame().x and frame.y == leftOneThirdFrame().y and frame.w < leftHalfFrame().w then
+		fillLeftTwoThird()
+	else
+		fillLeftHalf()
+	end
+end
+
+function sizeRight()
+	local win = hs.window.focusedWindow()
+	local frame = win:frame()
+
+	if frame.x == rightHalfFrame().x and frame.y == rightHalfFrame().y and frame.w == rightHalfFrame().w then
+		fillRightOneThird()
+	elseif frame.x == rightOneThirdFrame().x and frame.y == rightOneThirdFrame().y and frame.w < rightHalfFrame().w then
+		fillRightTwoThird()
+	else
+		fillRightHalf()
+	end
+end
+
+function sizeTop()
+	fillTopHalf()
+end
+
+function sizeBottom()
+	fillBottomHalf()
+end
+
+function sizeFullScreen()
 	local win = hs.window.focusedWindow()
 	local frame = win:frame()
 	local screen = win:screen()
@@ -179,10 +273,9 @@ hs.hotkey.bind({"cmd", "alt"}, "f", function()
 	frame.w = screenFrame.w
 	frame.h = screenFrame.h
 	win:setFrame(frame)
-end)
+end
 
--- Top left
-hs.hotkey.bind({"cmd", "alt", "shift"}, "Left", function()
+function sizeTopLeft()
 	local win = hs.window.focusedWindow()
 	local frame = win:frame()
 	local screen = win:screen()
@@ -193,10 +286,9 @@ hs.hotkey.bind({"cmd", "alt", "shift"}, "Left", function()
 	frame.w = screenFrame.w/2
 	frame.h = screenFrame.h/2
 	win:setFrame(frame)
-end)
+end
 
--- Top right
-hs.hotkey.bind({"cmd", "alt", "shift"}, "Right", function()
+function sizeTopRight()
 	local win = hs.window.focusedWindow()
 	local frame = win:frame()
 	local screen = win:screen()
@@ -207,10 +299,9 @@ hs.hotkey.bind({"cmd", "alt", "shift"}, "Right", function()
 	frame.w = screenFrame.w/2
 	frame.h = screenFrame.h/2
 	win:setFrame(frame)
-end)
+end
 
--- Bottom left
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left", function()
+function sizeBottomLeft()
 	local win = hs.window.focusedWindow()
 	local frame = win:frame()
 	local screen = win:screen()
@@ -221,10 +312,9 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Left", function()
 	frame.w = screenFrame.w/2
 	frame.h = screenFrame.h/2
 	win:setFrame(frame)
-end)
+end
 
--- Bottom right
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Right", function()
+function sizeBottomRight()
 	local win = hs.window.focusedWindow()
 	local frame = win:frame()
 	local screen = win:screen()
@@ -235,4 +325,4 @@ hs.hotkey.bind({"cmd", "alt", "ctrl"}, "Right", function()
 	frame.w = screenFrame.w/2
 	frame.h = screenFrame.h/2
 	win:setFrame(frame)
-end)
+end
