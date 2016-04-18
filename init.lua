@@ -10,10 +10,10 @@ end)
 hs.alert.show("Hammerspoon config reloaded")
 
 --Force command apps I use to be visible
-hs.hotkey.bind({"cmd", "alt", "ctrl"}, "i", function()
+hs.hotkey.bind({"shift"}, "F12", function()
 	os.execute("open -a Terminal")
-	os.execute("open -a MacVim")
 	os.execute("open -a Simulator")
+	os.execute("open -a MacVim")
 end)
 
 local downloadsDir = os.getenv("HOME") .. "/Downloads/"
