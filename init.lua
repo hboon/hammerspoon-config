@@ -53,7 +53,8 @@ function moveProvisioningProfiles(filename)
 end
 
 function moveAirDroppedImages(filename)
-	return moveAirDroppedImageAndVideos(filename, ".png", "image")
+	moveAirDroppedImageAndVideos(filename, ".png", "image")
+	return moveAirDroppedImageAndVideos(filename, ".jpg", "image")
 end
 
 function moveAirDroppedVideos(filename)
