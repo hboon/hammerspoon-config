@@ -38,6 +38,7 @@ downloadsWatcher = hs.pathwatcher.new(downloadsDir, function(changed)
 		moveAirDroppedImages(file)
 		moveAirDroppedVideos(file)
 		moveCerts(file)
+		moveEpub(file)
 	end
 end)
 downloadsWatcher:start()
@@ -65,6 +66,10 @@ end
 
 function moveCerts(filename)
 	return moveDownloadedFilesToDesktop(filename, "", "cer", "Cert")
+end
+
+function moveEpub(filename)
+	return moveDownloadedFilesToDirectory(filename, "", "epub", "ePub", "/Users/hboon/Dropbox/book-drop/")
 end
 
 function moveDownloadedFilesToDesktop(filename, prefix, ext, fileType)
